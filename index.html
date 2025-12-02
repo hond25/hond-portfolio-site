@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 基本設定 --- */
+        :root {
+            --bg-color: #f4f4f4; /* 背景色: 薄いグレー */
+            --text-color: #111;  /* 文字色: ほぼ黒 */
+            --accent-color: #555; /* サブ文字色: グレー */
+            --line-color: #ccc;   /* 線の色 */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            font-size: 16px;
+            /* 基本の背景色 */
+            background-image: linear-gradient(hsla(0, 0%, 100%, 0.812), #ffffffcf),
+                /* ベース色 */
+                url(img/noise.png);
+            /* ノイズ画像 */
+            background-repeat: repeat;
+            /* 繰り返し */
+            background-size: 100px;
+            /* ノイズパターンのサイズ調整 */
+            color: #333;
+            /* テキスト色 */
+        }
+
+        /* テック感のある等幅フォント */
+        .mono { font-family: 'Roboto Mono', monospace; }
+
+        /* --- レイアウト --- */
+        .container {
+            display: grid;
+            grid-template-columns: 350px 1fr; /* 左350px固定、右可変 */
+            min-height: 100vh;
+        }
+
+        /* --- 左サイドバー（固定情報） --- */
+        .sidebar {
+            padding: 60px 40px;
+            border-right: 1px solid var(--line-color);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        
+        .role {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 40px;
+        }
+
+        .nav-list { list-style: none; }
+        .nav-list li { margin-bottom: 15px; }
+        .nav-list a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* メニューの下線アニメーション */
+        .nav-list a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--text-color);
+            transition: width 0.3s;
+        }
+        .nav-list a:hover::after { width: 100%; }
+
+        .contact-info { font-size: 0.85rem; color: var(--accent-color); }
+
+        /* --- ボタンのデザイン設定 (ここが変更点) --- */
+        .btn {
+            display: inline-block;
+            padding: 10px 25px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease; /* ふわっと変化させる */
+            font-family: 'Roboto Mono', monospace;
+            border: 1px solid var(--text-color);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* パターンA: 枠線 → 塗りつぶし (View Codeなどに使用) */
+        .btn-outline-to-fill {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+        .btn-outline-to-fill:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        /* パターンB: 塗りつぶし → 枠線 (強調したいボタンに使用) */
+        .btn-fill-to-outline {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+        .btn-fill-to-outline:hover {
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+
+        /* --- 右メインコンテンツ --- */
+        .main-content {
+            padding: 0;
+        }
+
+        section {
+            border-bottom: 1px solid var(--line-color);
+            padding: 80px 60px;
+        }
+        section:last-child { border-bottom: none; }
+
+        .section-header {
+            margin-bottom: 40px;
+            display: flex;
+            align-items: baseline;
+            gap: 20px;
+        }
+
+        .section-title {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+            
+            /* 通常時の設定（薄い塗りつぶし） */
+            color: var(--text-color);
+            opacity: 0.4; 
+            -webkit-text-stroke: 0; /* 枠線なし */
+            
+            /* アニメーション設定 */
+            transition: all 0.3s ease;
+            cursor: default; /* カーソルは矢印のまま */
+        }
+
+        /* ホバー時の設定（枠線のみ・くっきり表示） */
+        .section-title:hover {
+            color: transparent; /* 塗りを透明に */
+            opacity: 1;         /* 全体の透明度を100%に戻す */
+            -webkit-text-stroke: 1.6px var(--text-color); /* 2pxの枠線をつける */
+        }
+
+        /* --- プロジェクトリスト --- */
+        .project-item { margin-bottom: 80px; }
+        
+        .project-meta {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        
+        /* 技術タグのデザイン（枠線→塗りつぶし） */
+        .tech-stack {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tech-tag {
+            border: 1px solid var(--text-color);
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: default;
+            
+            /* アニメーション */
+            transition: all 0.3s ease;
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+        .tech-tag:hover {
+            background-color: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        .project-desc {
+            max-width: 100%;
+            margin-bottom: 25px;
+        }
+
+        /* --- スキルリスト --- */
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        .skill-item h3 { font-size: 1.1rem; margin-bottom: 5px; border-bottom: 1px solid #ddd; padding-bottom: 5px; display: inline-block; }
+        .skill-item p { font-size: 0.95rem; color: var(--accent-color); margin-top: 5px; }
+
+        /* --- レスポンシブ (スマホ) --- */
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+            .sidebar { 
+                height: auto; 
+                position: relative; 
+                padding: 40px 20px; 
+                border-right: none;
+                border-bottom: 1px solid var(--line-color);
+            }
+            .section-title { font-size: 3rem; }
+            section { padding: 40px 20px; }
+            .skill-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="sidebar">
+        <div class="top-area">
+            <div class="brand">
+                <h1 class="mono">Hond</h1>
+                <h2 class="mono">Portfolio-site</h2>
+            </div>
+            <span class="role mono">Engineering Student / Developer</span>
+            
+            <nav>
+                <ul class="nav-list mono">
+                    <li><a href="#about">01. About</a></li>
+                    <li><a href="#projects">02. Projects</a></li>
+                    <li><a href="#skills">03. Skills</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="contact-area">
+            <a href="mailto:hond20030727@gmail.com" class="btn btn-fill-to-outline">Contact Me</a>
+            <div class="contact-info mono" style="margin-top: 20px;">
+                <p>Based in Japan</p>
+                <p>&copy; 2025 Portfolio</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <section id="about">
+            <div class="section-header">
+                <span class="section-title mono">ABOUT</span>
+            </div>
+            <p style="font-size: 1.1rem; max-width: 100%;">
+                芸術系の大学でプログラミングについて学んでいる大学生。<br>
+                基本的に身の回りで不自由に感じることをテーマに個人的に制作しています。
+            </p>
+        </section>
+
+        <section id="projects">
+            <div class="section-header">
+                <span class="section-title mono">WORKS</span>
+            </div>
+
+            <article class="project-item">
+                <span class="project-meta mono">2025 - Web Application</span>
+                <h3 class="project-name">Techlog - 閲覧履歴活用アプリ</h3>
+                <div class="tech-stack mono">
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">Flask</span>
+                    <span class="tech-tag">JavaScript</span>
+                    <span class="tech-tag">Firebse</span>
+                    <span class="tech-tag">chrome拡張機能</span>
+                </div>
+                <p class="project-desc">
+                    大学の卒業制作として作成した作品。<br>
+                    現代の情報化社会において、エンジニアは常に最新の技術情報をインプットし続けることが求められる。<br>
+                    しかし、膨大な情報量に対し、単に閲覧しただけの知識は定着せず、技術へと消化されないまま忘れられてしまうという課題がある。<br>
+                    本研究ではこの課題に対し、情報の量ではなく質と定着に焦点を当てたwebサービス「TechLog」を開発した。<br>
+                    本システムはブラウザの閲覧履歴からのAIによる情報の自動収集と要約、エビングハウスの忘却曲線に基づいた定期的な振り返り機能を統合したものである。<br>
+                    これによりユーザーは収集の手間をかけずに内面的な気づきや学びの記録に集中することが可能となる。<br>
+                    本制作は自身が直面する学習の課題から技術習得のプロセスをシステム化したものである。
+                </p>
+                <a href="https://techlog-gdcm.onrender.com/dashboard" class="btn btn-outline-to-fill">Use it -></a>
+            </article>
+        </section>
+
+        <section id="skills">
+            <div class="section-header">
+                <span class="section-title mono">SKILLS</span>
+            </div>
+            <div class="skill-grid">
+                <div class="skill-item">
+                    <h3 class="mono">Backend</h3>
+                    <p>Python (Flask, Django), SQL, Firebase</p>
+                </div>
+                <div class="skill-item">
+                    <h3 class="mono">Frontend</h3>
+                    <p>HTML/CSS, JavaScriptI</p>
+                </div>
+                <div class="skill-item">
+                    <h3 class="mono">Tools</h3>
+                    <p>Git, VSCode</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+</body>
+</html>
